@@ -1,0 +1,160 @@
+# 📘 Day 1 – Data Modelling Basics
+
+## 🔹 What is Data Modelling?
+
+Data Modelling is the process of designing how data should be structured, stored, and related in a database. It’s like creating a **blueprint** before building a house.
+
+---
+
+## 🔹 Key Concepts
+
+### 1. Entities
+
+* Entities are **things we store data about**.
+* Example: **Customer, Product, Order**.
+
+### 2. Attributes
+
+* Attributes are the **properties/details of an entity**.
+* Example:
+
+  * Customer → customer\_id, name, address
+  * Product → product\_id, product\_name, price
+
+### 3. Relationships
+
+* Relationships show how entities are connected.
+* Example:
+
+  * A Customer places an Order
+  * An Order contains a Product
+
+### 4. Keys
+
+* **Primary Key (PK):** Unique identifier for a record.
+
+  * Example: customer\_id in Customer table.
+* **Foreign Key (FK):** Connects one table to another.
+
+  * Example: customer\_id in Orders table refers to Customer table.
+
+---
+
+## 🔹 Example: Speed\_Delivery App Data Model
+
+### Entities & Attributes
+
+1. **Products**
+
+   * product\_id (PK)
+   * product\_name
+   * price
+
+2. **Customer**
+
+   * customer\_id (PK)
+   * name
+   * address
+
+3. **Orders**
+
+   * order\_id (PK)
+   * order\_amount
+   * customer\_id (FK → Customer.customer\_id)
+   * product\_id (FK → Products.product\_id)
+
+### Relationships
+
+* One Customer can place **many Orders**.
+* One Product can appear in **many Orders**.
+* Orders table **links Customer and Products**.
+
+---
+
+## 🔹 Textual ERD
+
+```
+Customer (customer_id PK, name, address)
+       |
+       | (1-to-M)
+       |
+Orders (order_id PK, order_amount, customer_id FK, product_id FK)
+       |
+       | (M-to-1)
+       |
+Products (product_id PK, product_name, price)
+```
+
+---
+
+## 🔹 SQL Schema
+
+```sql
+CREATE TABLE Products (
+    product_id INT PRIMARY KEY,
+    product_name VARCHAR(100),
+    price DECIMAL(10,2)
+);
+
+CREATE TABLE Customer (
+    customer_id INT PRIMARY KEY,
+    name VARCHAR(100),
+    address VARCHAR(200)
+);
+
+CREATE TABLE Orders (
+    order_id INT PRIMARY KEY,
+    order_amount DECIMAL(10,2),
+    customer_id INT,
+    product_id INT,
+    FOREIGN KEY (customer_id) REFERENCES Customer(customer_id),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id)
+);
+```
+
+---
+
+## 🔹 Sample Data
+
+```sql
+INSERT INTO Products VALUES (1, 'Burger', 120.00);
+INSERT INTO Products VALUES (2, 'Pizza', 250.00);
+
+INSERT INTO Customer VALUES (1, 'Amit', 'Delhi');
+INSERT INTO Customer VALUES (2, 'Sara', 'Mumbai');
+
+INSERT INTO Orders VALUES (101, 120.00, 1, 1);
+INSERT INTO Orders VALUES (102, 250.00, 2, 2);
+```
+
+---
+
+## 🔹 Example Query
+
+Find all orders with customer & product details:
+
+```sql
+SELECT o.order_id, c.name AS customer_name, p.product_name, o.order_amount
+FROM Orders o
+JOIN Customer c ON o.customer_id = c.customer_id
+JOIN Products p ON o.product_id = p.product_id;
+```
+
+### Output (Example)
+
+```
+order_id | customer_name | product_name | order_amount
+------------------------------------------------------
+101      | Amit          | Burger       | 120.00
+102      | Sara          | Pizza        | 250.00
+```
+
+---
+
+## ✅ Summary (Day 1 Learning)
+
+* You learned what **data modelling** is.
+* You understood **entities, attributes, and relationships**.
+* You created your **first ERD (Speed\_Delivery App)**.
+* You built SQL tables with **PK & FK**.
+* You inserted data and queried it successfully.
