@@ -1,0 +1,160 @@
+# MySQL Keys - Day 2 Learning
+
+In MySQL, **keys** are special fields (or combination of fields) in a table that help in uniquely identifying rows, ensuring data integrity, and improving query performance. Each key has its own role and purpose.
+
+---
+
+## 1. **Primary Key**
+
+* **Definition**: A unique identifier for each row in a table.
+* **Rules**:
+
+  * Cannot have `NULL` values.
+  * Must be unique.
+  * Only one primary key per table (but it can be made of multiple columns).
+* **Example**:
+
+  ```sql
+  CREATE TABLE students (
+      student_id INT PRIMARY KEY,
+      name VARCHAR(50),
+      age INT
+  );
+  ```
+
+  **Explanation**: Here, `student_id` is the primary key. Every student will have a unique ID.
+
+---
+
+## 2. **Foreign Key**
+
+* **Definition**: A field that links one table to another table’s primary key.
+* **Role**: Maintains **referential integrity** between tables.
+* **Example**:
+
+  ```sql
+  CREATE TABLE courses (
+      course_id INT PRIMARY KEY,
+      course_name VARCHAR(50)
+  );
+
+  CREATE TABLE enrollments (
+      enroll_id INT PRIMARY KEY,
+      student_id INT,
+      course_id INT,
+      FOREIGN KEY (course_id) REFERENCES courses(course_id)
+  );
+  ```
+
+  **Explanation**: The `course_id` in `enrollments` table is a foreign key referencing `courses(course_id)`. This ensures a student can only enroll in an existing course.
+
+---
+
+## 3. **Unique Key**
+
+* **Definition**: Ensures all values in a column are **unique**, but unlike primary key, it can allow **NULL values**.
+* **Example**:
+
+  ```sql
+  CREATE TABLE employees (
+      emp_id INT PRIMARY KEY,
+      email VARCHAR(100) UNIQUE,
+      phone VARCHAR(20) UNIQUE
+  );
+  ```
+
+  **Explanation**: Each employee must have a unique email and phone number. But these fields can be `NULL` (if not provided).
+
+---
+
+## 4. **Composite Key**
+
+* **Definition**: A primary key made of **two or more columns**.
+* **Role**: Uniquely identifies rows based on a combination of fields.
+* **Example**:
+
+  ```sql
+  CREATE TABLE orders (
+      order_id INT,
+      product_id INT,
+      PRIMARY KEY (order_id, product_id)
+  );
+  ```
+
+  **Explanation**: Here, neither `order_id` nor `product_id` alone is unique, but together they uniquely identify a row.
+
+---
+
+## 5. **Candidate Key**
+
+* **Definition**: Columns that can be a primary key. A table can have multiple candidate keys, but only one becomes the primary key.
+* **Example**:
+
+  ```sql
+  CREATE TABLE bank_customers (
+      customer_id INT,
+      account_number VARCHAR(20),
+      ssn VARCHAR(20),
+      PRIMARY KEY (customer_id)
+  );
+  ```
+
+  **Explanation**: Here, `customer_id`, `account_number`, and `ssn` are all **candidate keys** (unique identifiers). The designer chooses one (`customer_id`) as the primary key.
+
+---
+
+## 6. **Alternate Key**
+
+* **Definition**: Candidate keys that are **not chosen** as the primary key.
+* **Example**:
+
+  ```sql
+  CREATE TABLE bank_customers (
+      customer_id INT PRIMARY KEY,
+      account_number VARCHAR(20) UNIQUE,
+      ssn VARCHAR(20) UNIQUE
+  );
+  ```
+
+  **Explanation**: `account_number` and `ssn` are **alternate keys** (they could have been primary keys, but instead are marked as `UNIQUE`).
+
+---
+
+## 7. **Super Key**
+
+* **Definition**: Any set of columns that uniquely identifies a row.
+* **Note**: A **super key** may include extra unnecessary fields.
+* **Example**:
+
+  ```sql
+  CREATE TABLE students (
+      student_id INT,
+      email VARCHAR(100),
+      phone VARCHAR(20),
+      PRIMARY KEY (student_id)
+  );
+  ```
+
+  **Explanation**:
+
+  * `student_id` → is a super key (also the primary key).
+  * `student_id + email` → also a super key (extra column added).
+  * `email` alone (if unique) → another super key.
+
+---
+
+# 🔑 Summary Table
+
+| Key Type          | Allows NULL? | Must be Unique? | How Many per Table? | Purpose                              |
+| ----------------- | ------------ | --------------- | ------------------- | ------------------------------------ |
+| **Primary Key**   | ❌ No         | ✅ Yes           | 1                   | Uniquely identify a row              |
+| **Foreign Key**   | ✅ Yes        | ❌ No            | Many                | Connect tables                       |
+| **Unique Key**    | ✅ Yes        | ✅ Yes           | Many                | Ensure uniqueness                    |
+| **Composite Key** | ❌ No         | ✅ Yes           | 1 (as PK)           | Combine columns to uniquely identify |
+| **Candidate Key** | ❌ Usually    | ✅ Yes           | Many                | Possible primary key                 |
+| **Alternate Key** | Depends      | ✅ Yes           | Many                | Candidate keys not chosen as PK      |
+| **Super Key**     | Depends      | ✅ Yes           | Many                | Any key that uniquely identifies     |
+
+---
+
+✅ With these keys, MySQL ensures data **uniqueness, relationships, and integrity** in relational databases.
