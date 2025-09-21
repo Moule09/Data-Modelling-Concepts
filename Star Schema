@@ -1,0 +1,67 @@
+Star Schema Overview
+
+Tables in Star Schema
+
+Fact Table
+
+Stores measurable or quantitative data (e.g., sales amount, quantity sold).
+
+Usually contains millions of rows.
+
+Keys: foreign keys that connect to dimension tables.
+
+Dimension Tables
+
+Stores descriptive or textual data (e.g., product name, customer info, location).
+
+Smaller in size compared to fact tables.
+
+Keys: primary key used by fact table as foreign key.
+
+Why use Fact and Dimension tables
+
+Reduce redundancy – you store descriptive info only in dimension tables, not repeatedly in fact tables.
+
+Query performance – fact table is connected to dimensions in a simple, direct way.
+
+Less storage – avoids storing huge textual info repeatedly in the fact table.
+
+Single-level Dimensions
+
+Fact table directly connects to dimension tables without intermediate layers.
+
+Example:
+
+       Product Dimension
+              |
+       Customer Dimension
+              |
+           Fact Table (Sales)
+
+
+Here, the fact table “Sales” has foreign keys to Product and Customer, and stores measures like sales_amount or quantity_sold.
+
+Denormalized Design
+
+Dimensions may contain repeated data for simplicity and speed.
+
+Example:
+
+Product_ID	Product_Name	Product_Category
+1	Laptop	Electronics
+2	Mouse	Electronics
+3	Shirt	Apparel
+
+Notice Product_Category repeats – this is denormalization.
+
+Advantages
+
+Faster querying for analytics.
+
+Easy to understand and use for reports.
+
+Drawbacks
+
+Data repetition → more storage in dimension tables.
+
+Updates can be tricky (if category changes, need to update multiple rows).
