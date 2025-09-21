@@ -1,0 +1,99 @@
+1️⃣ Initial / New Load (Full Load)
+
+Definition:
+
+The very first time you load data from a source system into your target system (like a data warehouse).
+
+You load all the data from the source, regardless of size.
+
+Key Points:
+
+Happens once at the start.
+
+Often used when setting up a new data warehouse or pipeline.
+
+Can be slow if the data is large, because all rows are loaded.
+
+Example (E-Commerce Orders):
+
+Source: MySQL table orders with 1,000,000 rows.
+
+Target: Data warehouse table dw_orders.
+
+First Load SQL:
+
+SELECT * FROM orders;
+
+
+All 1,000,000 rows are copied to dw_orders.
+
+After this, you store last loaded timestamp or max order_id to track new data.
+
+Analogy:
+
+Moving all your clothes from one house to another when you first shift.
+
+2️⃣ Incremental Load
+
+Definition:
+
+After the first load, you load only new or updated records from the source.
+
+Avoids reloading everything every time, making ETL faster and more efficient.
+
+Key Points:
+
+Happens repeatedly, e.g., daily, hourly.
+
+Only fetches new or changed rows.
+
+Often uses timestamps (updated_at) or IDs (auto-increment).
+
+Example (E-Commerce Orders):
+
+Yesterday’s last order ID in dw_orders = 1,000,000
+
+Today, 10,000 new orders are in MySQL (order_id 1,000,001 to 1,010,000)
+
+Incremental Load SQL:
+
+SELECT * FROM orders
+WHERE order_id > 1000000;
+
+
+Only 10,000 new rows are loaded into dw_orders.
+
+Analogy:
+
+Moving only the new clothes you bought after shifting.
+
+3️⃣ Side-by-Side Comparison
+Feature	Initial / Full Load	Incremental Load
+When it happens	First time	After initial load, ongoing
+Data fetched	All data	Only new/updated rows
+Speed	Slow (all data)	Fast (small data)
+Resource Usage	High	Low
+Use case	Setting up data warehouse	Daily/hourly updates, analytics
+4️⃣ Simple Visual Example
+
+Imagine your orders table:
+
+order_id	order_date	customer_id
+1	2025-09-19	101
+2	2025-09-19	102
+3	2025-09-20	103
+
+Initial Load: Load all 3 rows to warehouse.
+
+Incremental Load: Tomorrow, a new order comes:
+
+order_id	order_date	customer_id
+4	2025-09-21	104
+
+Only load order_id 4 into warehouse.
+
+✅ Takeaway:
+
+Initial load = full load of all historical data
+
+Incremental load = small load of only new/changed data
