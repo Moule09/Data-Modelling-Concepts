@@ -1,0 +1,49 @@
+Snowflake Schema Overview
+
+Definition:
+
+A schema where dimension tables are normalized into multiple related tables (sub-dimensions).
+
+Keeps data more organized and reduces redundancy.
+
+Multi-Level Dimensions
+
+Instead of one big dimension table (like in Star Schema), we split it into smaller tables.
+
+Example:
+
+Product Dimension → Product_Subcategory → Product_Category
+
+
+Here, Product table stores product info, Product_Subcategory stores subcategory, and Product_Category stores category.
+
+Fact table still connects to the lowest-level dimension (Product), but you can join multiple levels for detailed analysis.
+
+Advantages
+
+Less data redundancy – same category doesn’t repeat for every product.
+
+Efficient storage – smaller tables for large datasets.
+
+Better for detailed hierarchies – like region → country → state → city.
+
+Drawbacks
+
+Slower queries – because you may need multiple joins to get descriptive info.
+
+Harder to maintain – more tables to manage, updates can be tricky.
+
+Star vs Snowflake Quick Comparison
+Feature	Star Schema	Snowflake Schema
+Dimension Tables	Denormalized	Normalized
+Redundancy	Higher	Lower
+Query Performance	Faster	Slower
+Storage	More	Less
+Maintenance	Simple	Complex
+Example Use Case	Quick dashboards, OLAP	Large datasets, normalized hierarchies
+
+💡 Key Tip to Remember:
+
+Star Schema → think speed and simplicity → denormalized, good for quick analysis.
+
+Snowflake Schema → think storage efficiency and hierarchy → normalized, good for large, complex datasets.
