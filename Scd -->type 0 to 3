@@ -1,0 +1,101 @@
+1. What is SCD?
+
+SCD stands for Slowly Changing Dimension.
+
+👉 It is a concept in Data Warehousing (DW), not just plain SQL.
+👉 It is used to handle situations when the attributes of dimension tables change over time slowly (not every second, but once in a while).
+
+In real life, customer data, employee addresses, or product prices change slowly, and we must decide how to store history.
+
+2. Why do we need SCD?
+
+Let’s take an Employee Dimension as an example:
+
+Emp_ID	Emp_Name	Address	Department
+101	Raj	Chennai	HR
+102	Mohan	Bangalore	IT
+
+Now, suppose Mohan moves from Bangalore → Hyderabad.
+
+👉 The question is: Should we overwrite the old address? Or should we keep history of his old and new addresses?
+
+That’s where SCD comes in. It defines how to store these changes in the dimension table.
+
+3. Types of SCD
+
+There are mainly 3 types (some mention more advanced ones, but these 3 are the most asked in interviews).
+
+SCD Type 1 – Overwrite
+
+Old data is simply overwritten with the new value.
+
+No history is kept.
+
+Example (Mohan moved to Hyderabad):
+
+Emp_ID	Emp_Name	Address	Department
+101	Raj	Chennai	HR
+102	Mohan	Hyderabad	IT
+
+👉 Use case: When historical data is not important (e.g., correcting spelling mistake in name).
+
+SCD Type 2 – Keep Full History
+
+A new row is inserted with the updated value.
+
+History is preserved using extra columns like Start_Date, End_Date, and Current_Flag.
+
+Example:
+
+Emp_Key	Emp_ID	Emp_Name	Address	Department	Start_Date	End_Date	Current_Flag
+1	102	Mohan	Bangalore	IT	2023-01-01	2023-08-15	N
+2	102	Mohan	Hyderabad	IT	2023-08-16	NULL	Y
+
+👉 Use case: When you want to track full history (e.g., customer addresses for billing).
+
+SCD Type 3 – Keep Limited History
+
+Add a new column to store the previous value (only 1-level history).
+
+No multiple records, but a limited history is stored.
+
+Example:
+
+Emp_ID	Emp_Name	Current_Address	Previous_Address	Department
+102	Mohan	Hyderabad	Bangalore	IT
+
+👉 Use case: When only current + last value is needed (e.g., current and previous job title).
+
+4. Where does SCD come under?
+
+It comes under Data Warehouse concepts.
+
+But implementation is usually done in SQL or ETL tools (like PySpark, Informatica, Talend, SQL queries, etc.).
+
+In Data Engineering, you’ll often be asked to design and implement SCD in SQL or Spark.
+
+5. Real-World Example
+
+Imagine an E-commerce system:
+
+Customer Address keeps changing.
+
+If you only need the latest address (for shipping) → SCD Type 1.
+
+If you want to analyze where the customer lived before (for marketing analytics) → SCD Type 2.
+
+If you only want the current and previous address → SCD Type 3.
+
+✅ Summary
+
+SCD = Slowly Changing Dimension (Data Warehouse concept).
+
+Purpose = Handle changes in dimension table data.
+
+Types:
+
+Type 1 = Overwrite old data (no history).
+
+Type 2 = Add new row (full history).
+
+Type 3 = Add new column (limited history).
