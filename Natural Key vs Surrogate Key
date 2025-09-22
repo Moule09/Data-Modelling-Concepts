@@ -1,0 +1,90 @@
+1️⃣ What is a Natural Key?
+
+A natural key is:
+
+A column (or set of columns) in a table that uniquely identifies a record based on real-world data.
+
+Exists in business data — you don’t create it artificially.
+
+Used as a primary key sometimes.
+
+Example:
+
+In a Customer table:
+
+CustomerName	Email	City
+Alice	alice@example.com
+	New York
+Bob	bob@example.com
+	Los Angeles
+
+Email can be used as a natural key because no two customers can have the same email.
+
+CustomerName alone may not be unique, so it’s usually not enough.
+
+2️⃣ Surrogate Key vs Natural Key
+Feature	Surrogate Key	Natural Key
+Meaning	Artificial, has no business meaning	Exists in business data
+Example	CustomerID INT AUTO_INCREMENT	Email, SSN, AccountNumber
+Stability	Never changes	Can change (people change emails, addresses, etc.)
+Purpose	Database-level unique ID	Real-world unique identifier
+Type	Usually integer	Can be string, integer, etc.
+Use in joins	Preferred for joins (faster)	Sometimes used, but can be slow if long/complex
+3️⃣ Why have a separate Surrogate Key?
+
+Stability: Natural keys can change (e.g., a customer changes email), but surrogate key stays constant.
+
+Performance: Integer surrogate keys are smaller, faster for indexing and joins than long text keys.
+
+Simpler Joins: Easier to link tables with single integer surrogate keys than multiple or long natural key columns.
+
+Data Warehousing: Surrogate keys allow you to track historical data for Slowly Changing Dimensions (SCD) without affecting business keys.
+
+4️⃣ Why keep the Natural Key too?
+
+Business Meaning: You still need it for reporting and understanding real-world data.
+
+Validation: Ensures uniqueness and data integrity.
+
+Reference: Helps to trace back to real-world entities easily.
+
+5️⃣ Example in MySQL
+Step 1: Create a table with both keys
+CREATE TABLE Customers (
+    CustomerID INT AUTO_INCREMENT PRIMARY KEY,  -- Surrogate Key
+    Email VARCHAR(100) UNIQUE,                  -- Natural Key
+    CustomerName VARCHAR(100),
+    City VARCHAR(50)
+);
+
+
+CustomerID = surrogate key (database-level unique ID)
+
+Email = natural key (business-level unique ID)
+
+Step 2: Insert data
+INSERT INTO Customers (Email, CustomerName, City) VALUES
+('alice@example.com', 'Alice', 'New York'),
+('bob@example.com', 'Bob', 'Los Angeles');
+
+Step 3: Check the table
+SELECT * FROM Customers;
+
+CustomerID	Email	CustomerName	City
+1	alice@example.com
+	Alice	New York
+2	bob@example.com
+	Bob	Los Angeles
+
+✅ Surrogate key gives DB-level ID
+✅ Natural key ensures no duplicate emails
+
+6️⃣ Key Points
+
+Natural key: Business-level unique data (Email, SSN, AccountNumber)
+
+Surrogate key: DB-level unique ID (CustomerID)
+
+We keep both in most cases: surrogate key for DB operations, natural key for business reference.
+
+Helps with data integrity, performance, and history tracking.
